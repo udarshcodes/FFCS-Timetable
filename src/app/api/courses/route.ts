@@ -129,7 +129,18 @@ export async function GET(req: NextRequest) {
 
     if (q) {
         const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(escapedQuery, 'i');
+        const regex = /^.*\b.*$/i;
+if (escapedQuery) {
+    const queryParts = escapedQuery.split(' ');
+    filter.$or = queryParts.map((part) => ({ 
+        $or: [
+            { courseId: { $regex: part, $options: 'i' } }, 
+            { courseName: { $regex: part, $options: 'i' } }
+        ]
+    }));
+} else {
+    filter.$or = [{ courseId: { $regex: '', $options: 'i' } }];
+}
         filter.$or = [{ courseId: regex }, { courseName: regex }];
     }
 

@@ -110,7 +110,12 @@ function isSameSlot(a: timetableDisplayData | null, b: timetableDisplayData | nu
 }
 
 function getSlotTokens(slotName: string) {
-    return slotName
+    const slotRegex = /^\s*[A-Z]{2}(?:\s*\+\s*[A-Z]{2})*\s*$/;
+    if (!slotRegex.test(slotName)) {
+        throw new Error('Invalid slot name format');
+    }
+    const sanitizedSlotName = slotName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return sanitizedSlotName
         .split('+')
         .map(token => token.trim())
         .filter(Boolean);

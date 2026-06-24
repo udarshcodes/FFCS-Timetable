@@ -20,7 +20,7 @@ export async function resolveUniqueTimetableTitle(options: ResolveOptions) {
         _id?: { $ne: string };
     } = {
         owner,
-        title: { $regex: new RegExp(`^${escapeRegex(trimmedTitle)}(?: (\\d+))?$`) },
+        title: { $regex: /^${escapeRegex(trimmedTitle)}(?: (\d+))?$/ },
     };
 
     if (excludeId) {
@@ -40,7 +40,7 @@ export async function resolveUniqueTimetableTitle(options: ResolveOptions) {
             continue;
         }
 
-        const match = title.match(new RegExp(`^${escapeRegex(trimmedTitle)} (\\d+)$`));
+        const match = title.match(new RegExp(`^${escapeRegex(trimmedTitle)} (\\d+)$`, ''));
         if (match?.[1]) {
             const suffix = Number.parseInt(match[1], 10);
             if (!Number.isNaN(suffix) && suffix > 1) {
