@@ -27,17 +27,10 @@ export default function TermsOfService() {
   useEffect(() => {
     const visibleSections: Record<string, boolean> = {};
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        visibleSections[entry.target.id] = entry.isIntersecting;
-      });
+import { observerCallback } from '../utils/intersectionObserverUtils';
 
-      // Find the first visible section in DOM order
-      const active = SECTIONS.find((section) => visibleSections[section.id]);
-      if (active) {
-        setActiveSection(active.id);
-      }
-    };
+// Utility functions moved to a separate utility file
+import { updateVisibleSections, findFirstVisibleSection } from '../utils/intersectionObserverUtils';
 
     const observer = new IntersectionObserver(observerCallback, {
       root: null,

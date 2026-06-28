@@ -606,7 +606,33 @@ export default function CourseSelectionPage() {
                         } else {
                             showToast('Timetable updated successfully!');
                         }
-                        setTimeout(() => { router.refresh(); router.push('/saved'); }, 1200);
+                        let timeoutId = setTimeout(() => {
+    try {
+        // existing code here...
+    } finally {
+        clearTimeout(timeoutId);
+    }
+    clearTimeout(timeoutId);
+Note: The above fix assumes that the `setTimeout` call is not nested within another function or block. If it is, the `clearTimeout` call should be placed accordingly to ensure the timer is properly cleared. 
+
+Additionally, you may need to declare the `timeoutId` variable in a scope that is accessible to both the `setTimeout` and `clearTimeout` calls. 
+
+If the `setTimeout` call is within a function that is called multiple times, you should ensure that the `clearTimeout` call is also within the same function to avoid clearing the wrong timer. 
+
+In this case, since we don't have the full code, we can't provide the exact declaration of `timeoutId`. However, it should be declared in a scope that is accessible to both the `setTimeout` and `clearTimeout` calls. 
+
+For example:
+let timeoutId: number | null = null;
+
+// ...
+
+timeoutId = setTimeout(() => {
+    // ...
+    if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+    }
+}, 1000);
+This way, the `timeoutId` is accessible to both the `setTimeout` and `clearTimeout` calls, and the timer is properly cleared. router.refresh(); router.push('/saved'); }, 1200);
                     }
                     return { _id: editingTimetableId, shareId: null };
                 }

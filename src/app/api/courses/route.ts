@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
 
     if (q) {
         const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(escapedQuery, 'i');
+        const regex = new RegExp(escapedQuery.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
         filter.$or = [{ courseId: regex }, { courseName: regex }];
     }
 

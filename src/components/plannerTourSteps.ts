@@ -18,7 +18,11 @@ export const setPreferenceStep = async (step: number) => {
     if (typeof window === 'undefined') return;
 
     window.dispatchEvent(new CustomEvent(PREFERENCE_TOUR_STEP_EVENT, { detail: { step } }));
-    await new Promise(resolve => window.setTimeout(resolve, 120));
+    const timeoutId = window.setTimeout(() => {}, 120);
+    await new Promise(resolve => {
+        window.setTimeout(resolve, 120);
+        window.clearTimeout(timeoutId);
+    });
 };
 
 export const plannerTourSteps: PlannerTourStep[] = [
