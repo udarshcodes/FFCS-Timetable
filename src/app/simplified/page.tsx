@@ -606,7 +606,10 @@ export default function CourseSelectionPage() {
                         } else {
                             showToast('Timetable updated successfully!');
                         }
-                        setTimeout(() => { router.refresh(); router.push('/saved'); }, 1200);
+                        const timeoutId = setTimeout(() => {
+    // existing code here
+    return () => clearTimeout(timeoutId);
+} router.refresh(); router.push('/saved'); }, 1200);
                     }
                     return { _id: editingTimetableId, shareId: null };
                 }

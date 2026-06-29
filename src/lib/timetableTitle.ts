@@ -14,18 +14,18 @@ export async function resolveUniqueTimetableTitle(options: ResolveOptions) {
     const { owner, requestedTitle, excludeId } = options;
     const trimmedTitle = requestedTitle.trim();
 
-    const query: {
-        owner: string;
-        title: { $regex: RegExp };
-        _id?: { $ne: string };
-    } = {
-        owner,
-        title: { $regex: new RegExp(`^${escapeRegex(trimmedTitle)}(?: (\\d+))?$`) },
-    };
+const sanitizedTitle = escapeRegex(trimmedTitle);
+const regexPattern = `^${sanitizedTitle}(?: (\\d+))?$`;
+const query: {
+    owner: string;
+    title: { $regex: RegExp };
+    _id?: { $ne: string };
+} = {
+    owner,
+    title: { $regex: new RegExp(regexPattern, 'i') },
+    _id: excludeId ? { $ne: excludeId } : undefined,
+};
 
-    if (excludeId) {
-        query._id = { $ne: excludeId };
-    }
 
     const existing = await Timetable.find(query).select('title').lean();
     if (existing.length === 0) {
@@ -40,7 +40,9 @@ export async function resolveUniqueTimetableTitle(options: ResolveOptions) {
             continue;
         }
 
-        const match = title.match(new RegExp(`^${escapeRegex(trimmedTitle)} (\\d+)$`));
+        const sanitizedTitle = escapeRegex(trimmedTitle);
+const regex = new RegExp(`^${escapeRegex(trimmedTitle)}(?: (\\d+))?$`, 'i');
+const match = title.match(regex);
         if (match?.[1]) {
             const suffix = Number.parseInt(match[1], 10);
             if (!Number.isNaN(suffix) && suffix > 1) {

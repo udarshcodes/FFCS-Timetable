@@ -22,13 +22,10 @@ const _venueIndex = new Map<string, string>();
 chennaiCourses.forEach((r) => {
     if ((r as any).VENUE) _venueIndex.set(`${r.CODE}|${r.SLOT}|${r.FACULTY}`, (r as any).VENUE);
 });
-function lookupVenue(courseCode: string, slot: string, facultyName: string): string {
-    const key = `${courseCode}|${slot}|${facultyName}`;
-    if (_venueIndex.has(key)) return _venueIndex.get(key)!;
-    const firstSlot = slot.split('+')[0]?.trim();
-    const partialKey = `${courseCode}|${firstSlot}|${facultyName}`;
-    return _venueIndex.get(partialKey) || 'TBD';
-}
+import { lookupVenue } from '@/lib/sharedUtils';
+
+// or if not already imported
+// import { lookupVenue } from '../sharedUtils';
 import { fullCourseData, timetableDisplayData } from '@/lib/type';
 import { clearPlannerClientCache } from '@/lib/clientCache';
 import { getShortCourseName } from '@/lib/courseDisplay';
