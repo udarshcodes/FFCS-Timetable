@@ -29,11 +29,12 @@ export default function FeedbackPage() {
                     email: session?.user?.email
                 }),
             });
-
-            if (res.ok) {
-                setMessage("Thank you! Your feedback has been received.");
-                setFeedback("");
-                setTimeout(() => router.push("/"), 2000);
+if (res.ok) {
+    setMessage("Thank you! Your feedback has been received.");
+    setFeedback("");
+    const timeoutId = setTimeout(() => router.push("/"), 2000);
+    return () => clearTimeout(timeoutId);
+}
             } else {
                 setMessage("Failed to submit feedback. Please try again.");
             }
