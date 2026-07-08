@@ -127,11 +127,18 @@ export async function GET(req: NextRequest) {
 
     const filter: Record<string, unknown> = {};
 
-    if (q) {
-        const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(escapedQuery, 'i');
+if (q) {
+    const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    try {
+        const regex = new RegExp('^' + escapedQuery.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '$', 'i');
         filter.$or = [{ courseId: regex }, { courseName: regex }];
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Invalid query parameter' },
+            { status: 400, headers: rateLimit.headers }
+        );
     }
+}
 
     if (normalizedSchool) {
         filter.school = normalizedSchool;

@@ -31,12 +31,9 @@ const _venueIndex = new Map<string, string>();
 chennaiCourses.forEach((r) => {
     if ((r as any).VENUE) _venueIndex.set(`${r.CODE}|${r.SLOT}|${r.FACULTY}`, (r as any).VENUE);
 });
+import { lookupVenue as sharedLookupVenue } from '@/lib/sharedUtils';
 function lookupVenue(courseCode: string, slot: string, facultyName: string): string {
-    const key = `${courseCode}|${slot}|${facultyName}`;
-    if (_venueIndex.has(key)) return _venueIndex.get(key)!;
-    const firstSlot = slot.split('+')[0]?.trim();
-    const partialKey = `${courseCode}|${firstSlot}|${facultyName}`;
-    return _venueIndex.get(partialKey) || 'TBD';
+    return sharedLookupVenue(courseCode, slot, facultyName);
 }
 
 // Types
@@ -86,18 +83,9 @@ const setCookie = (name: string, value: string) => {
     document.cookie = `${name}=${value}; path=/; max-age=3600`;
 };
 
-const getCookie = (name: string): string | null => {
-    if (typeof document === 'undefined') return null;
-    const nameEQ = name + '=';
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.indexOf(nameEQ) === 0) {
-            return decodeURIComponent(cookie.substring(nameEQ.length));
-        }
-    }
-    return null;
-};
+import { getCookie as sharedGetCookie } from '@/lib/sharedUtils';
+
+const getCookie = sharedGetCookie;
 
 function isSameSlot(a: timetableDisplayData | null, b: timetableDisplayData | null) {
     if (!a || !b) return false;
